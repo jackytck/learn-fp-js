@@ -1,0 +1,8 @@
+{
+  "name": "learn-fp-js",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:jackytck/learn-fp-js.git",
+  "author": "Jacky Tang <jackytck@gmail.com>",
+  "license": "MIT"
+}
