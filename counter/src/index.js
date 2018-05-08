@@ -1,4 +1,6 @@
-import h from 'hyperscript'
+import { diff, h, patch } from 'virtual-dom'
+
+import createElement from 'virtual-dom/create-element'
 import hh from 'hyperscript-helpers'
 
 const {
@@ -43,12 +45,14 @@ function update (msg, model) {
 function app (initModel, update, view, node) {
   let model = initModel
   let currentView = view(dispatch, model)
-  node.appendChild(currentView)
+  let rootNode = createElement(currentView)
+  node.appendChild(rootNode)
 
   function dispatch (msg) {
     model = update(msg, model)
     const updatedView = view(dispatch, model)
-    node.replaceChild(updatedView, currentView)
+    const patches = diff(currentView, updatedView)
+    rootNode = patch(rootNode, patches)
     currentView = updatedView
   }
 }
