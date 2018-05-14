@@ -1,6 +1,7 @@
 import {
   caloriesInputMsg,
   mealInputMsg,
+  saveMealMsg,
   showFormMsg
 } from './update'
 
@@ -55,7 +56,13 @@ function formView (dispatch, model) {
 
   if (showForm) {
     return form(
-      { className: 'w-100 mv2' },
+      {
+        className: 'w-100 mv2',
+        onsubmit: e => {
+          e.preventDefault()
+          dispatch(saveMealMsg)
+        }
+      },
       [
         fieldSet('Meal', description, e => dispatch(mealInputMsg(e.target.value))),
         fieldSet('Calories', calories || '', e => dispatch(caloriesInputMsg(e.target.value))),
