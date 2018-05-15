@@ -7,6 +7,7 @@ import {
 
 import { h } from 'virtual-dom'
 import hh from 'hyperscript-helpers'
+import mealTable from './meal-table'
 
 const {
   button,
@@ -83,6 +84,7 @@ function view (dispatch, model) {
   return div({ className: 'mw6 center' }, [
     h1({ className: 'f2 pv2 bb'}, 'Calorie Counter'),
     formView(dispatch, model),
+    mealTable(dispatch, model.meals),
     pre(JSON.stringify(model, null, 2))
   ])
 }
