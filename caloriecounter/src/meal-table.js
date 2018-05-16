@@ -1,5 +1,6 @@
 import * as R from 'ramda'
 
+import { deleteMealMsg } from './update'
 import { h } from 'virtual-dom'
 import hh from 'hyperscript-helpers'
 
@@ -10,7 +11,8 @@ const {
   th,
   tr,
   tbody,
-  table
+  table,
+  i
 } = hh(h)
 
 const headerRow = tr([
@@ -46,7 +48,12 @@ function mealRow (dispatch, className, meal) {
   return tr({ className }, [
     cell(td, 'pa2', meal.description),
     cell(td, 'pa2 tr', meal.calories),
-    cell(td, 'pa2 tr', []),
+    cell(td, 'pa2 tr', [
+      i({
+        className: 'ph1 fa fa-trash-o pointer',
+        onclick: () => dispatch(deleteMealMsg(meal.id))
+      })
+    ]),
   ])
 }
 
