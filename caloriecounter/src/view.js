@@ -84,8 +84,8 @@ function view (dispatch, model) {
   return div({ className: 'mw6 center' }, [
     h1({ className: 'f2 pv2 bb'}, 'Calorie Counter'),
     formView(dispatch, model),
-    mealTable(dispatch, model.meals),
-    pre(JSON.stringify(model, null, 2))
+    mealTable(dispatch, model.meals)
+    // pre(JSON.stringify(model, null, 2))
   ])
 }
 

@@ -4,7 +4,8 @@ const MSGS = {
   MEAL_INPUT: 'MEAL_INPUT',
   CALORIES_INPUT: 'CALORIES_INPUT',
   SAVE_MEAL: 'SAVE_MEAL',
-  DELETE_MEAL: 'DELETE_MEAL'
+  DELETE_MEAL: 'DELETE_MEAL',
+  EDIT_MEAL: 'EDIT_MEAL'
 }
 
 export function showFormMsg (showForm) {
@@ -37,6 +38,13 @@ export function deleteMealMsg (id) {
   }
 }
 
+export function editMealMsg (editId) {
+  return {
+    type: MSGS.EDIT_MEAL,
+    editId
+  }
+}
+
 function update (msg, model) {
   switch (msg.type) {
     case MSGS.SHOW_FORM:
@@ -52,18 +60,26 @@ function update (msg, model) {
       )(msg.calories)
       return { ...model, calories }
     case MSGS.SAVE_MEAL: {
-      return add(model)
+      const { editId } = model
+      const updatedModel = editId === null ? add(model) : edit(model)
+      return updatedModel
     }
     case MSGS.DELETE_MEAL: {
       const { id } = msg
       const meals = R.filter(meal => meal.id !== id, model.meals)
       return { ...model, meals }
     }
+    case MSGS.EDIT_MEAL: {
+      const { editId } = msg
+      const meal = R.find(meal => meal.id === editId, model.meals)
+      const { description, calories } = meal
+      return { ...model, editId, description, calories, showForm: true }
+    }
   }
   return model
 }
 
-function add(model) {
+function add (model) {
   const { nextId, description, calories } = model
   const meal = { id: nextId, description, calories }
   const meals = [...model.meals, meal]
@@ -74,6 +90,24 @@ function add(model) {
     description: '',
     calories: 0,
     showForm: false
+  }
+}
+
+function edit (model) {
+  const { description, calories, editId } = model
+  const meals = R.map(meal => {
+    if (meal.id === editId) {
+      return { ...meal, description, calories }
+    }
+    return meal
+  }, model.meals)
+  return {
+    ...model,
+    meals,
+    description: '',
+    calories: 0,
+    showForm: false,
+    editId: null
   }
 }
 
