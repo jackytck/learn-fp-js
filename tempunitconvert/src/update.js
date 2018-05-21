@@ -29,7 +29,7 @@ function update (msg, model) {
       }
       const leftValue = toInt(msg.leftValue)
       return { ...model, souceLeft: true, leftValue }
-    case MSGS.LEFT_VALUE_INPUT:
+    case MSGS.RIGHT_VALUE_INPUT:
       if (msg.rightValue === '') {
         return { ...model, souceLeft: false, leftValue: '', rightValue: '' }
       }
