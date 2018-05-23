@@ -41,24 +41,55 @@ function update (msg, model) {
   switch (msg.type) {
     case MSGS.LEFT_VALUE_INPUT:
       if (msg.leftValue === '') {
-        return { ...model, souceLeft: true, leftValue: '', rightValue: '' }
+        return { ...model, sourceLeft: true, leftValue: '', rightValue: '' }
       }
       const leftValue = toInt(msg.leftValue)
-      return { ...model, souceLeft: true, leftValue }
+      return convert({ ...model, sourceLeft: true, leftValue })
     case MSGS.RIGHT_VALUE_INPUT:
       if (msg.rightValue === '') {
-        return { ...model, souceLeft: false, leftValue: '', rightValue: '' }
+        return { ...model, sourceLeft: false, leftValue: '', rightValue: '' }
       }
       const rightValue = toInt(msg.rightValue)
-      return { ...model, souceLeft: false, rightValue }
+      return convert({ ...model, sourceLeft: false, rightValue })
     case MSGS.LEFT_UNIT_CHANGED:
       const { leftUnit } = msg
-      return { ...model, leftUnit }
+      return convert({ ...model, leftUnit })
     case MSGS.RIGHT_UNIT_CHANGED:
       const { rightUnit } = msg
-      return { ...model, rightUnit }
+      return convert({ ...model, rightUnit })
   }
   return model
+}
+
+function convert (model) {
+  const { leftValue, leftUnit, rightValue, rightUnit, sourceLeft } = model
+
+  const [fromUnit, fromTemp, toUnit ] =
+    sourceLeft
+    ? [leftUnit, leftValue, rightUnit]
+    : [rightUnit, rightValue, leftUnit]
+
+  const otherValue = R.pipe(
+    convertFromToTemp,
+    round,
+  )(fromUnit, toUnit, fromTemp);
+
+  return sourceLeft
+    ? { ...model, rightValue: otherValue }
+    : { ...model, leftValue: otherValue }
+}
+
+function convertFromToTemp (fromUnit, toUnit, temp) {
+  const convertFn = R.pathOr(
+    R.identity,
+    [fromUnit, toUnit],
+    UnitConversions)
+
+  return convertFn(temp)
+}
+
+function round (number) {
+  return Math.round(number * 10) / 10
 }
 
 function FtoC (temp) {
@@ -94,4 +125,5 @@ const UnitConversions = {
     Fahrenheit: KtoF
   }
 }
+
 export default update
